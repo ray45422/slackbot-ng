@@ -1,0 +1,7 @@
+export SLACK_APP_TOKEN='put app token here'
+
+export SLACK_BOT_TOKEN='put bot token here'
+export SLACK_BOT_REFRESH_TOKEN='put bot refresh token here'
+
+export SLACK_USER_TOKEN='put user token here'
+export SLACK_USER_REFRESH_TOKEN='put user refresh token here'
