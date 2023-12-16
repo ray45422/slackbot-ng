@@ -2,7 +2,7 @@ from slack_bolt import App
 from modules.handlers import MsgHandler
 import re
 
-class Handler(MsgHandler):
+class ChannelDescHandler(MsgHandler):
     regex = None
     emojiRe = None
     def __init__(self):
@@ -17,9 +17,6 @@ class Handler(MsgHandler):
             "type": "message",
         }
 
-    def matchers(self):
-        return re.compile("^channeldesc$")
-
     def description(self):
         return 'チャンネル一覧を取得します'
 
@@ -29,17 +26,20 @@ class Handler(MsgHandler):
     def author(self):
         return "ray45422"
 
-    def process(self, event, say):
+    def canProcess(self, event):
         if 'subtype' in event.keys():
             subtype = event['subtype']
             if subtype != 'message_changed':
-                return
+                return False
             message = event['message']['text']
         else:
             message = event['text']
         match = self.regex.match(message)
         if match == None:
-            return
+            return False
+        return True
+
+    def process(self, event, say):
         client = say.client
         result = client.api_call(
             api_method='conversations.list'
@@ -65,3 +65,6 @@ class Handler(MsgHandler):
 
     def isPublic(self):
         return True
+
+def init():
+    return [ChannelDescHandler()]
