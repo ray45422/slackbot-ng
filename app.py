@@ -21,12 +21,12 @@ app = App(
     oauth_settings=oauth_settings
 )
 
-import modules.handlers as handlers
-handlers.init(app)
-
 @app.event('tokens_revoked')
 def tokensRevekedEvent(event, say):
     say(f"トークンが失効しました")
+
+import modules.handlers as handlers
+handlers.init(app)
 
 if __name__ == "__main__":
     SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
