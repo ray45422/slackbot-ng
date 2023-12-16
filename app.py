@@ -3,6 +3,7 @@ logging.basicConfig(level=logging.INFO)
 
 import os
 from slack_bolt import App
+from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_bolt.oauth.oauth_settings import OAuthSettings
 from slack_sdk.oauth.installation_store import FileInstallationStore
 from slack_sdk.oauth.state_store import FileOAuthStateStore
@@ -28,4 +29,4 @@ def tokensRevekedEvent(event, say):
     say(f"トークンが失効しました")
 
 if __name__ == "__main__":
-    app.start()
+    SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
