@@ -7,6 +7,10 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_bolt.oauth.oauth_settings import OAuthSettings
 from slack_sdk.oauth.installation_store import FileInstallationStore
 from slack_sdk.oauth.state_store import FileOAuthStateStore
+import modules.g as g
+from threading import Thread
+
+g.bot_token = None
 
 oauth_settings = OAuthSettings(
     client_id=os.environ['SLACK_CLIENT_ID'],
@@ -28,5 +32,29 @@ def tokensRevekedEvent(event, say):
 import modules.handlers as handlers
 handlers.init(app)
 
+def sendMessage(channel, message):
+    if not g.bot_token:
+        print('tokenが設定されていません')
+        return
+    from slack_sdk import WebClient
+    client = WebClient(token=g.bot_token)
+    client.chat_postMessage(
+        channel=channel,
+        text=message, 
+        attachments=[])
+
+def stdin():
+    import json
+    print('stdin read')
+    while(True):
+        line = input()
+        j = json.loads(line)
+        try:
+            sendMessage(j['channel'], j['message'])
+        except Exception as e:
+            print(e)
+
 if __name__ == "__main__":
+    stdinThread = Thread(target=stdin)
+    stdinThread.start()
     SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()

@@ -3,6 +3,7 @@ from slack_bolt import App
 from pathlib import Path
 import importlib
 import re
+import modules.g as g
 
 class MsgHandler(metaclass=ABCMeta):
     @abstractmethod
@@ -40,6 +41,7 @@ class MsgHandler(metaclass=ABCMeta):
 handlers = []
 def onEvent(event, say):
     handled = []
+    g.bot_token = say.client.token
     for h in handlers:
         et = h.eventType()
         if(et == None):
